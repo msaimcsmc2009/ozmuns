@@ -1,0 +1,1507 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OZMUN '26</title>
+<link rel="icon" type="image/png" href="logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+
+<style>
+/* =========================================================
+   ROOT & RESET
+   ========================================================= */
+:root {
+  --bg-void:    #0d0305;
+  --bg-deep:    #130406;
+  --bg-maroon:  #1e0709;
+  --bg-card:    #1a0608;
+  --gold-dim:   #8a6f3a;
+  --gold:       #BFA054;
+  --gold-bright:#d4aa62;
+  --gold-glow:  #f0cc80;
+  --cream:      #F2EBE1;
+  --muted:      #9a8878;
+  --faint:      #5a4e44;
+  --border:     rgba(191,160,84,0.22);
+  --border-hi:  rgba(191,160,84,0.55);
+  --shadow-gold:0 0 40px rgba(191,160,84,0.12);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background-color: var(--bg-void);
+  color: var(--cream);
+  font-family: 'Cormorant Garamond', serif;
+  overflow-x: hidden;
+  line-height: 1.75;
+  cursor: default;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-void); }
+::-webkit-scrollbar-thumb { background: var(--gold-dim); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+
+h1, h2, h3, h4, .brand-title {
+  font-family: 'Cinzel', serif;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+/* =========================================================
+   NOISE TEXTURE OVERLAY
+   ========================================================= */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+  opacity: 0.028;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* =========================================================
+   GLOBAL ARKA PLAN DESENİ
+   ========================================================= */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: 
+    radial-gradient(ellipse at center, transparent 40%, rgba(5,0,2,0.85) 100%),
+    linear-gradient(165deg, rgba(13,3,5,0.7) 0%, rgba(30,7,9,0.5) 50%, rgba(13,3,5,0.7) 100%),
+    url('arkaplan.png'); 
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: brightness(1.1) contrast(1.1); 
+  z-index: -1; 
+  pointer-events: none;
+}
+
+/* =========================================================
+   NAVBAR
+   ========================================================= */
+.top-navbar {
+  position: fixed;
+  top: 0; width: 100%;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 1.4rem 6%;
+  z-index: 1000;
+  transition: all 0.5s ease;
+  background: transparent;
+}
+
+.top-navbar.scrolled-nav {
+  background: rgba(13, 3, 3, 0.96);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  padding: 1rem 6%;
+  box-shadow: 0 4px 30px rgba(0,0,0,0.5);
+}
+
+.brand-area {
+  display: flex; align-items: center; gap: 14px;
+  cursor: pointer; text-decoration: none; user-select: none;
+}
+.brand-logo {
+  height: 42px;
+  filter: drop-shadow(0 0 8px rgba(191,160,84,0.4));
+  transition: filter 0.3s;
+}
+.brand-area:hover .brand-logo { filter: drop-shadow(0 0 14px rgba(191,160,84,0.7)); }
+
+.brand-title {
+  font-family: 'Cinzel', serif;
+  font-size: 1.2rem;
+  color: var(--cream);
+  letter-spacing: 3px;
+  font-weight: 600;
+}
+.brand-title span { color: var(--gold); }
+
+.nav-links { display: flex; align-items: center; gap: 2.2rem; list-style: none; }
+.nav-links a {
+  color: var(--muted);
+  text-decoration: none;
+  font-family: 'Cinzel', serif;
+  font-size: 0.78rem;
+  letter-spacing: 2.5px;
+  position: relative;
+  transition: color 0.3s;
+  padding-bottom: 4px;
+}
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 0; height: 1px;
+  background: var(--gold);
+  transition: width 0.35s ease;
+}
+.nav-links a:hover { color: var(--gold-bright); }
+.nav-links a:hover::after { width: 100%; }
+.nav-links a.active-link { color: var(--gold-bright); }
+.nav-links a.active-link::after { width: 100%; }
+
+.mobile-trigger {
+  display: none;
+  background: none; border: 1px solid var(--border);
+  color: var(--gold); font-size: 1.4rem; cursor: pointer;
+  width: 42px; height: 42px;
+  align-items: center; justify-content: center;
+  transition: border-color 0.3s, background 0.3s;
+  border-radius: 2px;
+}
+.mobile-trigger:hover { background: rgba(191,160,84,0.08); border-color: var(--gold); }
+
+/* =========================================================
+   SECTION SYSTEM
+   ========================================================= */
+.content-section {
+  display: none;
+  min-height: 100vh;
+  animation: sectionIn 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.content-section.is-active { display: block; }
+
+@keyframes sectionIn {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* =========================================================
+   HERO
+   ========================================================= */
+.hero-container {
+  height: 100vh;
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  text-align: center; position: relative; overflow: hidden;
+}
+
+.hero-container::after {
+  content: '';
+  position: absolute; 
+  top: 100px; bottom: 28px; left: 28px; right: 28px;
+  border: 1px solid rgba(191,160,84,0.18);
+  pointer-events: none;
+  z-index: 1;
+  animation: borderPulse 6s ease-in-out infinite;
+}
+@keyframes borderPulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+.hero-content {
+  position: relative; z-index: 2;
+  display: flex; flex-direction: column; align-items: center; gap: 1rem;
+}
+
+.hero-branding-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: heroFloat 5s ease-in-out infinite;
+}
+
+.hero-main-logo {
+  max-width: 420px; width: 82%; height: auto;
+  filter: brightness(0.85) sepia(0.2) contrast(1.1) drop-shadow(0 0 20px rgba(191,160,84,0.15));
+  transition: filter 0.5s ease;
+}
+
+.hero-main-logo:hover {
+  filter: brightness(1.1) sepia(0) contrast(1.1) drop-shadow(0 0 45px rgba(191,160,84,0.6));
+}
+
+.hero-main-title {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  color: var(--gold);
+  letter-spacing: 8px;
+  margin-top: 0.5rem;
+  text-shadow: 0 0 25px rgba(191,160,84,0.4);
+  font-weight: 700;
+  pointer-events: none;
+}
+
+@keyframes heroFloat {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-12px); }
+}
+
+.hero-divider {
+  display: flex; align-items: center; gap: 16px;
+  width: 320px; max-width: 90vw;
+  margin-top: 1rem;
+}
+.hero-divider::before, .hero-divider::after {
+  content: ''; flex: 1; height: 1px;
+  background: linear-gradient(to right, transparent, var(--gold-dim));
+}
+.hero-divider::after { background: linear-gradient(to left, transparent, var(--gold-dim)); }
+.hero-divider-icon { color: var(--gold); font-size: 1rem; opacity: 0.7; letter-spacing: 0; }
+
+.event-details {
+  display: flex; gap: 0; font-family: 'Cinzel', serif;
+}
+.event-detail-item {
+  font-size: 0.88rem;
+  letter-spacing: 3.5px;
+  color: var(--muted);
+  padding: 0 2rem;
+  transition: color 0.3s;
+}
+.event-detail-item:not(:last-child) {
+  border-right: 1px solid var(--border);
+}
+.event-detail-item:hover { color: var(--gold-bright); }
+
+/* =========================================================
+   VENUE & DISPLAY SECTIONS
+   ========================================================= */
+.display-area, .venue-area {
+  padding: 7rem 5%;
+  position: relative;
+  text-align: center;
+}
+
+.display-area::before, .venue-area::before {
+  content: '';
+  position: absolute; top: 0; left: 10%; right: 10%;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--border-hi), transparent);
+}
+
+.section-header { margin-bottom: 3.5rem; }
+.section-overline {
+  font-family: 'Cinzel', serif;
+  font-size: 0.68rem; letter-spacing: 5px;
+  color: var(--gold-dim); text-transform: uppercase;
+  margin-bottom: 12px; display: block;
+}
+.section-headline {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+  color: var(--cream);
+  letter-spacing: 2px;
+  position: relative; display: inline-block;
+}
+.section-headline span.gold { color: var(--gold); }
+.section-headline::after {
+  content: '';
+  position: absolute;
+  bottom: -12px; left: 50%; transform: translateX(-50%);
+  width: 60px; height: 1px;
+  background: var(--gold);
+}
+.section-desc {
+  color: var(--muted);
+  font-style: italic;
+  font-size: 1.05rem;
+  margin-top: 1.5rem;
+}
+
+/* Image Display Container (Boşluklar Optimize Edildi) */
+.image-display-container {
+  max-width: 900px; margin: 0 auto;
+  border: 1px solid var(--border);
+  background: var(--bg-maroon);
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column;
+  position: relative; overflow: hidden;
+  padding: 5px; 
+}
+.image-display-container img {
+  width: 100%; 
+  height: auto;
+  object-fit: contain;
+  position: relative;
+  z-index: 2;
+  filter: sepia(0.1) brightness(0.9) contrast(1.1); 
+}
+.image-inner-wrap {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.image-display-container::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at center, rgba(191,160,84,0.02) 0%, transparent 80%);
+  z-index: 1;
+}
+
+/* Venue Label Styles */
+.venue-label {
+  font-family: 'Cinzel', serif;
+  font-size: 0.95rem;
+  letter-spacing: 4px;
+  color: var(--gold);
+  margin-top: 20px;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  text-shadow: 0 0 10px rgba(191,160,84,0.3);
+  position: relative;
+  z-index: 3;
+}
+
+/* Map Container */
+.map-container {
+  max-width: 900px; margin: 0 auto;
+  height: 380px;
+  border: 1px solid var(--border);
+  background: var(--bg-maroon);
+  display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 16px;
+  position: relative; overflow: hidden;
+}
+.map-container::before {
+  content: '';
+  position: absolute inset: 0;
+  background: radial-gradient(ellipse at center, rgba(191,160,84,0.04) 0%, transparent 70%);
+}
+.map-icon { font-size: 2.5rem; color: var(--gold-dim); opacity: 0.5; }
+.map-text {
+  font-family: 'Cinzel', serif;
+  color: var(--faint); font-size: 0.85rem; letter-spacing: 3px;
+}
+
+/* =========================================================
+   LAYOUT WRAPPER
+   ========================================================= */
+.layout-wrapper {
+  max-width: 1200px; margin: 0 auto;
+  padding: 6rem 5% 5rem;
+}
+
+/* =========================================================
+   APPLY NOW / REGISTRATION
+   ========================================================= */
+#registration-view .layout-wrapper { padding-top: 120px; }
+
+.registration-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  gap: 1.8rem;
+  margin-top: 1rem;
+}
+
+.reg-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  padding: 3rem 2.2rem 2.5rem;
+  text-decoration: none; color: var(--cream);
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+  transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.45s ease, border-color 0.35s ease;
+  position: relative; overflow: hidden;
+}
+
+.reg-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(to right, transparent, var(--gold), transparent);
+  transform: scaleX(0); transform-origin: center;
+  transition: transform 0.4s ease;
+}
+.reg-card:hover::before { transform: scaleX(1); }
+
+.reg-card:hover {
+  transform: translateY(-8px);
+  border-color: rgba(191,160,84,0.45);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5), 0 0 0 0 rgba(191,160,84,0.1);
+}
+
+.reg-card-icon {
+  width: 52px; height: 52px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 1.5rem;
+  background: rgba(191,160,84,0.05);
+  transition: all 0.4s ease;
+  position: relative; z-index: 1;
+}
+
+.reg-card-icon::after {
+  content: '⬥';
+  color: var(--gold-dim);
+  font-size: 1.4rem;
+  transition: all 0.4s ease;
+}
+
+.reg-card:hover .reg-card-icon {
+  border-color: var(--gold);
+  background: rgba(191,160,84,0.15);
+  box-shadow: 0 0 15px rgba(191,160,84,0.2);
+  transform: rotate(45deg);
+}
+
+.reg-card:hover .reg-card-icon::after {
+  color: var(--gold-glow);
+  transform: rotate(-45deg);
+  text-shadow: 0 0 8px var(--gold);
+}
+
+.reg-title {
+  font-family: 'Cinzel', serif;
+  font-size: 1rem; letter-spacing: 2.5px;
+  margin-bottom: 0.8rem;
+  color: var(--cream);
+  position: relative; z-index: 1;
+}
+
+.action-btn {
+  font-family: 'Cinzel', serif;
+  font-size: 0.72rem; letter-spacing: 3.5px;
+  color: var(--gold); border: 1px solid var(--border);
+  padding: 10px 24px; margin-top: 1rem;
+  transition: all 0.3s ease;
+  position: relative; z-index: 1;
+}
+.reg-card:hover .action-btn {
+  background: var(--gold); color: var(--bg-void);
+  border-color: var(--gold);
+}
+
+/* =========================================================
+   COMMITTEES 
+   ========================================================= */
+#councils-view .layout-wrapper { padding-top: 120px; }
+
+.councils-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2.5rem;
+  margin-top: 1.5rem;
+  justify-content: center;
+}
+
+.council-box {
+  text-align: center;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  padding: 2.5rem 1.5rem;
+  position: relative;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.3s, box-shadow 0.4s;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.council-box::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% 0%, rgba(191,160,84,0.06) 0%, transparent 60%);
+  opacity: 0; transition: opacity 0.4s;
+}
+.council-box:hover::before { opacity: 1; }
+.council-box:hover {
+  transform: translateY(-6px);
+  border-color: rgba(191,160,84,0.4);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+}
+
+.img-frame {
+  width: 100%; height: 200px;
+  margin: 0 auto 1.5rem;
+  border-radius: 4px; padding: 2px;
+  border: 1px solid var(--border);
+  position: relative; transition: border-color 0.4s;
+  background: var(--bg-maroon);
+}
+.img-frame::before {
+  content: '';
+  position: absolute; inset: -6px;
+  border-radius: 6px;
+  border: 1px dashed rgba(191,160,84,0.2);
+  transition: opacity 0.4s, transform 0.6s;
+}
+.council-box:hover .img-frame::before {
+  opacity: 0.7;
+  transform: scale(1.02);
+}
+.img-frame img {
+  width: 100%; height: 100%;
+  object-fit: cover; border-radius: 2px;
+  filter: brightness(0.9) contrast(1.1);
+  transition: transform 0.5s ease, filter 0.4s;
+}
+.council-box:hover .img-frame img {
+  transform: scale(1.05);
+  filter: brightness(1.1) contrast(1);
+}
+
+.council-name {
+  font-family: 'Cinzel', serif;
+  font-size: 1rem; color: var(--cream);
+  letter-spacing: 1px; line-height: 1.5;
+  transition: color 0.3s;
+  margin-top: 10px;
+}
+.council-box:hover .council-name { color: var(--gold-bright); }
+
+.council-tag {
+  display: inline-block;
+  margin-top: 15px;
+  font-family: 'Cinzel', serif;
+  font-size: 0.68rem; letter-spacing: 2px;
+  color: var(--gold-dim);
+  border: 1px solid var(--border);
+  padding: 6px 18px;
+  text-transform: uppercase;
+  align-self: center;
+  transition: all 0.3s;
+}
+.council-box:hover .council-tag {
+  background: var(--gold-dim);
+  color: var(--bg-void);
+  border-color: var(--gold-dim);
+}
+
+/* =========================================================
+   COMMITTEE DETAIL MODAL
+   ========================================================= */
+.committee-modal {
+  position: fixed; inset: 0;
+  z-index: 10000;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; visibility: hidden;
+  transition: all 0.4s ease;
+  padding: 20px;
+}
+.committee-modal.active {
+  opacity: 1; visibility: visible;
+}
+.modal-overlay {
+  position: absolute; inset: 0;
+  background: rgba(5,0,2,0.92);
+  backdrop-filter: blur(12px);
+}
+.modal-content {
+  position: relative;
+  background: var(--bg-card);
+  border: 1px solid var(--gold-dim);
+  width: 100%; max-width: 800px;
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 4rem 3rem 3rem;
+  animation: modalSlide 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+}
+@keyframes modalSlide {
+  from { transform: translateY(30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.modal-close {
+  position: absolute; top: 20px; right: 20px;
+  background: none; border: 1px solid var(--border);
+  color: var(--gold); font-size: 1.5rem; cursor: pointer;
+  width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
+  transition: all 0.3s;
+}
+.modal-close:hover { border-color: var(--gold); background: rgba(191,160,84,0.1); }
+
+.modal-title {
+  font-family: 'Cinzel', serif;
+  font-size: 2rem; color: var(--gold);
+  margin-bottom: 1.5rem; border-bottom: 1px solid var(--border);
+  padding-bottom: 1rem;
+}
+.modal-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.2rem; line-height: 1.8;
+  color: var(--cream);
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+}
+
+/* =========================================================
+   CONTACT
+   ========================================================= */
+#inquiry-view .layout-wrapper { padding-top: 120px; }
+
+.contact-layout {
+  display: flex; flex-wrap: wrap;
+  gap: 3rem; justify-content: center;
+  margin-top: 1rem;
+}
+
+.form-container {
+  flex: 1.3; min-width: 300px; max-width: 620px;
+  background: var(--bg-card);
+  padding: 3.5rem;
+  border: 1px solid var(--border);
+  position: relative;
+}
+.form-container::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(to right, transparent, var(--gold-dim), transparent);
+}
+
+.input-row { margin-bottom: 1.6rem; }
+.input-row label {
+  display: block;
+  font-family: 'Cinzel', serif;
+  color: var(--gold-dim); margin-bottom: 8px;
+  font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase;
+}
+
+.styled-input {
+  width: 100%;
+  background: rgba(0,0,0,0.25);
+  border: 1px solid rgba(191,160,84,0.15);
+  border-bottom-color: rgba(191,160,84,0.3);
+  color: var(--cream);
+  font-family: 'Cormorant Garamond', serif; font-size: 1rem;
+  padding: 12px 16px; outline: none;
+  transition: all 0.3s ease;
+  -webkit-appearance: none; appearance: none;
+}
+.styled-input:focus {
+  border-color: var(--gold-dim);
+  background: rgba(0,0,0,0.4);
+  box-shadow: 0 4px 20px rgba(191,160,84,0.06);
+}
+.styled-input::placeholder { color: var(--faint); }
+
+textarea.styled-input {
+  min-height: 130px; resize: vertical;
+}
+
+.input-row-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem;
+}
+
+.submit-trigger {
+  background: transparent;
+  color: var(--gold);
+  border: 1px solid var(--gold-dim);
+  padding: 14px; width: 100%;
+  font-family: 'Cinzel', serif; font-size: 0.82rem;
+  letter-spacing: 3.5px; text-transform: uppercase;
+  cursor: pointer; transition: all 0.4s ease;
+  margin-top: 0.5rem; position: relative; overflow: hidden;
+}
+.submit-trigger::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: var(--gold);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 0.4s ease;
+  z-index: 0;
+}
+.submit-trigger:hover::before { transform: scaleX(1); }
+.submit-trigger span { position: relative; z-index: 1; transition: color 0.4s; }
+.submit-trigger:hover span { color: var(--bg-void); }
+
+.direct-contact {
+  flex: 0.7; min-width: 280px;
+  background: var(--bg-maroon);
+  border: 1px solid var(--border);
+  padding: 4rem 2.5rem;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.5rem;
+  text-align: center; position: relative;
+}
+.direct-contact::before {
+  content: '⚜';
+  position: absolute; top: 24px; left: 50%; transform: translateX(-50%);
+  font-size: 1.5rem; color: var(--gold-dim); opacity: 0.4;
+}
+
+.mail-label {
+  font-family: 'Cinzel', serif;
+  color: var(--gold-dim); font-size: 0.72rem;
+  letter-spacing: 4px; text-transform: uppercase;
+  margin-top: 1rem;
+}
+
+.mail-icon {
+  width: 64px; height: 64px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.6rem;
+  background: rgba(191,160,84,0.04);
+  color: var(--gold);
+  transition: all 0.3s;
+}
+.mail-icon:hover { background: rgba(191,160,84,0.1); border-color: var(--gold-dim); }
+
+.mail-link {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.25rem; color: var(--cream);
+  text-decoration: none;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 4px;
+  transition: all 0.3s; letter-spacing: 0.5px;
+}
+.mail-link:hover { color: var(--gold-bright); border-bottom-color: var(--gold); }
+
+.social-row {
+  display: flex; gap: 1rem; margin-top: 0.5rem;
+}
+.social-btn {
+  width: 40px; height: 40px;
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--gold-dim); text-decoration: none; font-size: 1rem;
+  transition: all 0.3s; border-radius: 2px;
+}
+.social-btn:hover { border-color: var(--gold); color: var(--gold); background: rgba(191,160,84,0.06); }
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+.site-footer {
+  background: var(--bg-void);
+  border-top: 1px solid var(--border);
+  padding: 3rem 5%;
+  position: relative;
+}
+.footer-inner {
+  max-width: 1200px; margin: 0 auto;
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 1.5rem;
+}
+.footer-brand {
+  font-family: 'Cinzel', serif;
+  color: var(--muted); font-size: 0.8rem; letter-spacing: 2px;
+  display: flex; align-items: center; gap: 12px;
+}
+.footer-brand img {
+  height: 32px;
+  width: auto;
+  filter: drop-shadow(0 0 5px rgba(191,160,84,0.3));
+}
+.footer-brand strong { color: var(--gold-dim); }
+.footer-copy {
+  font-family: 'Cormorant Garamond', serif;
+  color: var(--faint); font-size: 0.9rem; letter-spacing: 0.5px;
+}
+.footer-copy a { color: var(--gold-dim); text-decoration: none; transition: color 0.3s; }
+.footer-copy a:hover { color: var(--gold); }
+
+/* =========================================================
+   PAGE LOADER
+   ========================================================= */
+.page-loader {
+  position: fixed; inset: 0;
+  background: var(--bg-void);
+  z-index: 99999;
+  display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 24px;
+  /* Kapanış animasyonunu 1 saniyeye uzatarak daha şık hale getirdik */
+  transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1), visibility 1s; 
+}
+.page-loader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+
+.loader-logo {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 2.2rem; letter-spacing: 6px;
+  color: var(--gold); opacity: 0;
+  animation: loaderReveal 0.8s ease forwards; 
+}
+.loader-logo img { height: 60px; margin-bottom: 10px; }
+.loader-line {
+  width: 0; height: 1px;
+  background: linear-gradient(to right, transparent, var(--gold), transparent);
+  animation: loaderLine 1.2s ease 0.3s forwards; 
+}
+@keyframes loaderReveal { to { opacity: 1; } }
+@keyframes loaderLine { to { width: 200px; } }
+
+/* =========================================================
+   UTILITY CLASSES
+   ========================================================= */
+.text-center { text-align: center; }
+.mb-sm { margin-bottom: 1rem; }
+.mb-md { margin-bottom: 2rem; }
+.mb-lg { margin-bottom: 3.5rem; }
+
+.ornament-line {
+  display: flex; align-items: center; gap: 16px;
+  max-width: 480px; margin: 0 auto 3rem;
+}
+.ornament-line::before, .ornament-line::after {
+  content: ''; flex: 1; height: 1px;
+  background: linear-gradient(to right, transparent, var(--border-hi));
+}
+.ornament-line::after { background: linear-gradient(to left, transparent, var(--border-hi)); }
+.ornament-line-icon { color: var(--gold-dim); font-size: 1rem; flex-shrink: 0; }
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+@media (max-width: 1024px) {
+  .councils-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 900px) {
+  .nav-links {
+    display: none;
+    position: fixed; top: 0; right: 0; bottom: 0;
+    width: 75vw; max-width: 320px;
+    background: rgba(13,3,5,0.98);
+    border-left: 1px solid var(--border);
+    backdrop-filter: blur(20px);
+    flex-direction: column;
+    padding: 6rem 1.5rem 3rem; 
+    gap: 0;
+    z-index: 100;
+    transform: translateX(100%);
+    transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .nav-links.mobile-active {
+    display: flex;
+    transform: translateX(0);
+  }
+  .nav-links li {
+    width: 100%;
+  }
+  .nav-links a {
+    display: block;
+    width: 100%;
+    font-size: 0.9rem; 
+    padding: 1.2rem 0; 
+    border-bottom: 1px solid var(--border);
+    text-align: center;
+  }
+  .nav-links a::after { display: none !important; }
+  .nav-links a.active-link { background: rgba(191,160,84,0.05); }
+
+  .mobile-trigger { display: flex; position: relative; z-index: 200; }
+
+  .mobile-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 99;
+    backdrop-filter: blur(2px);
+  }
+  .mobile-overlay.active { display: block; }
+}
+
+@media (max-width: 768px) {
+  .event-detail-item { padding: 0 1rem; font-size: 0.75rem; letter-spacing: 2px; }
+  .councils-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+  .input-row-grid { grid-template-columns: 1fr; }
+  .form-container { padding: 2.5rem 1.8rem; }
+  .site-footer { flex-direction: column; text-align: center; }
+  .footer-inner { flex-direction: column; text-align: center; }
+}
+
+@media (max-width: 480px) {
+  .layout-wrapper { padding: 5rem 4% 4rem; }
+  .hero-main-title { font-size: 1.8rem; letter-spacing: 4px; }
+  .hero-main-logo { max-width: 280px; }
+  .section-headline { font-size: 1.6rem; }
+  .event-details { flex-direction: column; gap: 0.8rem; align-items: center; }
+  .event-detail-item { border-right: none; border-bottom: 1px solid var(--border); width: 200px; padding: 0.6rem; }
+}
+
+/* =========================================================
+   NOTIFICATION TOAST
+   ========================================================= */
+.toast {
+  position: fixed; bottom: 2rem; right: 2rem;
+  background: var(--bg-card);
+  border: 1px solid var(--gold-dim);
+  padding: 1.2rem 2rem;
+  font-family: 'Cinzel', serif; font-size: 0.8rem; letter-spacing: 1.5px;
+  color: var(--gold-bright);
+  z-index: 99998;
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: transform 0.45s ease, opacity 0.45s ease, visibility 0.45s ease;
+  max-width: 320px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  pointer-events: none;
+}
+.toast.show { 
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0); 
+  pointer-events: auto;
+}
+.toast.error { border-color: rgba(220,80,80,0.4); color: #e08080; }
+</style>
+</head>
+<body>
+
+<div class="page-loader" id="pageLoader">
+  <div class="loader-logo">OZMUN</div>
+  <div class="loader-line"></div>
+</div>
+
+<div class="committee-modal" id="committeeModal">
+  <div class="modal-overlay" onclick="closeModal()"></div>
+  <div class="modal-content">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h3 id="modalTitle" class="modal-title"></h3>
+    <div id="modalDescription" class="modal-text"></div>
+  </div>
+</div>
+
+<div class="mobile-overlay" id="mobileOverlay" onclick="closeMobileNav()"></div>
+
+<header class="top-navbar" id="mainNavbar">
+  <div class="brand-area" onclick="switchTab('home-view')">
+    <img src="logo.png" alt="" class="brand-logo">
+    <div class="brand-title">OZMUN <span>'26</span></div>
+  </div>
+
+  <button class="mobile-trigger" id="hamburger" onclick="toggleMobileNav()" aria-label="Menu">
+    <svg width="20" height="14" viewBox="0 0 20 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="20" height="1.5" rx="0.75" fill="currentColor"/>
+      <rect y="6.25" width="14" height="1.5" rx="0.75" fill="currentColor"/>
+      <rect y="12.5" width="20" height="1.5" rx="0.75" fill="currentColor"/>
+    </svg>
+  </button>
+
+  <nav>
+    <ul class="nav-links" id="linkList">
+      <li><a href="#" onclick="switchTab('home-view')" data-view="home-view">HOME</a></li>
+      <li><a href="#" onclick="switchTab('registration-view')" data-view="registration-view">APPLY NOW</a></li>
+      <li><a href="#" onclick="switchTab('councils-view')" data-view="councils-view">COMMITTEES</a></li>
+      <li><a href="#" onclick="switchTab('inquiry-view')" data-view="inquiry-view">CONTACT</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="content-section is-active" id="home-view">
+  <div class="hero-container">
+    <div class="hero-content">
+      <div class="hero-branding-box">
+        <img src="logo.png" alt="OZMUN Conference Logo" class="hero-main-logo">
+        <h1 class="hero-main-title">OZMUN '26</h1>
+      </div>
+      <div class="hero-divider">
+        <div class="hero-divider-icon">⬥</div>
+      </div>
+      <div class="event-details">
+        <div class="event-detail-item">ANTALYA, TURKEY</div>
+        <div class="event-detail-item">JULY 8-9-10, 2026</div>
+      </div>
+    </div>
+  </div>
+
+  <section class="display-area">
+    <div class="section-header">
+      <span class="section-overline">Venue Showcase</span>
+      <h2 class="section-headline">Our <span class="gold">Venue</span></h2>
+    </div>
+    <div class="ornament-line">
+      <span class="ornament-line-icon">✦</span>
+    </div>
+    <div class="image-display-container">
+      <div class="image-inner-wrap">
+        <img src="hukuk.jpeg" alt="Akdeniz University Law Faculty">
+      </div>
+      <div class="venue-label">Akdeniz University Law Faculty</div>
+    </div>
+  </section>
+</main>
+
+<main class="content-section" id="registration-view">
+  <div class="layout-wrapper">
+    <div class="section-header text-center mb-lg">
+      <span class="section-overline"></span>
+      <h2 class="section-headline">Apply <span class="gold">Now</span></h2>
+    </div>
+    <div class="ornament-line mb-lg">
+      <span class="ornament-line-icon">✦</span>
+    </div>
+    <div class="registration-grid">
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLSdvyKflNNKBEDQgf2oSrb87hRNf5qgFwB7QcQZ75ZNlJmhgHQ/viewform" target="_blank" class="reg-card">
+        <div class="reg-card-icon"></div> <div class="reg-title">DELEGATE</div>
+        <div class="action-btn">Apply →</div>
+      </a>
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLSdYzxwoBzYNeTc-ZKEkO_bcPOdnho-5mgqtQkdfl-u_38AduA/viewform" target="_blank" class="reg-card">
+        <div class="reg-card-icon"></div> <div class="reg-title">DELEGATION</div>
+        <div class="action-btn">Apply →</div>
+      </a>
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLSelcUknzTnNX4K7C06Rg8uDB7yjOgkXGdOXZgLxxhEthgCxbg/viewform" target="_blank" class="reg-card">
+        <div class="reg-card-icon"></div> <div class="reg-title">CHAIRBOARD</div>
+        <div class="action-btn">Apply →</div>
+      </a>
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLSedhcfNHQ1zteQs5w9gzQZg0vFcFyDlSbhMrot_JsGZD8DWyA/viewform" target="_blank" class="reg-card">
+        <div class="reg-card-icon"></div> <div class="reg-title">ADMINISTRATIVE STAFF</div>
+        <div class="action-btn">Apply →</div>
+      </a>
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLSdCAwddosKoxc66iFkISWgIzG31lAmbP2eqrDMZPgFh7XP08g/viewform" target="_blank" class="reg-card">
+        <div class="reg-card-icon"></div> <div class="reg-title">PRESS</div>
+        <div class="action-btn">Apply →</div>
+      </a>
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLSd1fSqiEvj6CimXxG5wbnC95Vbf5QavUrgBMMNmW-k0Qod-hg/viewform" target="_blank" class="reg-card">
+        <div class="reg-card-icon"></div> <div class="reg-title">OBSERVER</div>
+        <div class="action-btn">Apply →</div>
+      </a>
+    </div>
+  </div>
+</main>
+
+<main class="content-section" id="councils-view">
+  <div class="layout-wrapper">
+    <div class="section-header text-center mb-lg">
+      <span class="section-overline"></span>
+      <h2 class="section-headline">Our <span class="gold">Committees</span></h2>
+    </div>
+    <div class="ornament-line mb-lg">
+      <span class="ornament-line-icon">✦</span>
+    </div>
+
+    <div class="councils-grid">
+      <div class="council-box" onclick="openModal('jcc')">
+        <div class="img-frame"><img src="odyssey.png" alt="JCC"></div>
+        <div class="council-name">THE ODYSSEY</div>
+        <div class="council-tag">Tap for more details</div>
+      </div>
+      <div class="council-box" onclick="openModal('unesco')">
+        <div class="img-frame"><img src="maidan.png" alt="UNESCO"></div>
+        <div class="council-name">MAIDAN UPRISING</div>
+        <div class="council-tag">Tap for more details</div>
+      </div>
+      <div class="council-box" onclick="openModal('caesar')">
+        <div class="img-frame"><img src="argentina.png" alt="Argentina Military Junta"></div>
+        <div class="council-name">ARGENTINA MILITARY JUNTA</div>
+        <div class="council-tag">Tap for more details</div>
+      </div>
+      <div class="council-box" onclick="openModal('court')">
+        <div class="img-frame"><img src="ispc.png" alt="ISPC"></div>
+        <div class="council-name">ISPC</div>
+        <div class="council-tag">Tap for more details</div>
+      </div>
+      <div class="council-box" onclick="openModal('ecosoc')">
+        <div class="img-frame"><img src="iata.png" alt="IATA"></div>
+        <div class="council-name">IATA</div>
+        <div class="council-tag">Tap for more details</div>
+      </div>
+      <div class="council-box" onclick="openModal('ccmedellin')">
+        <div class="img-frame"><img src="nac.png" alt="NAC"></div>
+        <div class="council-name">NAC</div>
+        <div class="council-tag">Tap for more details</div>
+      </div>
+      <div class="council-box" onclick="openModal('unhcr')">
+        <div class="img-frame"><img src="cern.png" alt="CERN"></div>
+        <div class="council-name">CERN</div>
+        <div class="council-tag">Tap for more details</div>
+      </div>
+      <div class="council-box" onclick="openModal('nato')">
+        <div class="img-frame"><img src="tourism.png" alt="NATO"></div>
+        <div class="council-name">UN TOURISM</div>
+        <div class="council-tag">Tap for more details</div>
+      </div>
+      <div class="council-box" onclick="openModal('sochum')">
+        <div class="img-frame"><img src="unesco.png" alt="SOCHUM"></div>
+        <div class="council-name">UNESCO</div>
+        <div class="council-tag">Tap for more details</div>
+      </div>
+      <div class="council-box" onclick="openModal('legal')">
+        <div class="img-frame"><img src="court.png" alt="Legal"></div>
+        <div class="council-name">US CRIMINAL COURT</div>
+        <div class="council-tag">Tap for more details</div>
+      </div>
+      <div class="council-box" onclick="openModal('disec')">
+        <div class="img-frame"><img src="who.png" alt="DISEC"></div>
+        <div class="council-name">H-WHO</div>
+        <div class="council-tag">Tap for more details</div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<main class="content-section" id="inquiry-view">
+  <div class="layout-wrapper">
+    <div class="section-header text-center mb-lg">
+      <span class="section-overline"></span>
+      <h2 class="section-headline">Contact <span class="gold">Us</span></h2>
+    </div>
+    <div class="ornament-line mb-lg">
+      <span class="ornament-line-icon">✦</span>
+    </div>
+    <div class="contact-layout">
+      <form class="form-container" id="inquiryForm" action="https://formspree.io/f/illumtrain@gmail.com" method="POST">
+        <div class="input-row-grid">
+          <div class="input-row">
+            <label for="firstName">First Name</label>
+            <input type="text" id="firstName" name="firstName" class="styled-input" placeholder="John" required>
+          </div>
+          <div class="input-row">
+            <label for="lastName">Last Name</label>
+            <input type="text" id="lastName" name="lastName" class="styled-input" placeholder="Doe" required>
+          </div>
+        </div>
+        <div class="input-row">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" name="email" class="styled-input" placeholder="your@email.com" required>
+        </div>
+        <div class="input-row">
+          <label for="subject">Subject</label>
+          <input type="text" id="subject" name="subject" class="styled-input" placeholder="How can we help?" required>
+        </div>
+        <div class="input-row">
+          <label for="message">Message</label>
+          <textarea id="message" name="message" class="styled-input" placeholder="Your message here..." required></textarea>
+        </div>
+        <button type="submit" class="submit-trigger">
+          <span id="submitText">SEND</span>
+        </button>
+      </form>
+      <div class="direct-contact">
+        <div class="mail-label">Direct Mail</div>
+        <div class="mail-icon">✉</div>
+        <a href="mailto:illumtrain@gmail.com" class="mail-link">illumtrain@gmail.com</a>
+        <p style="font-family:'Cormorant Garamond',serif; color:var(--faint); font-size:0.95rem; font-style:italic; max-width:220px; line-height:1.6; margin-top:0.5rem;">
+          Do Not Hesitate to Contact With Us!
+        </p>
+        <div class="social-row" style="margin-top:1.5rem;">
+          <a href="https://www.instagram.com/ozmun2026/" class="social-btn" title="Instagram" aria-label="Instagram">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/>
+              <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor"/>
+            </svg>
+          </a>
+          <a href="mailto:illumtrain@gmail.com" class="social-btn" title="Email" aria-label="Email">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="2" y="4" width="20" height="16" rx="2"/>
+              <polyline points="2,4 12,13 22,4"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <img src="logo.png" alt="OZMUN Logo"> <strong>OZMUN'26</strong>
+    </div>
+    <div class="footer-copy">
+      © 2026 All rights reserved &nbsp;|&nbsp;
+      Made by <a>Muhammed Saim Çeşmeci</a>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---- Committee Data ---- */
+const committeeData = {
+  jcc: {
+    title: "THE ODYSSEY",
+    img: "jcc.png",
+    desc: `Welcome to the FCC: The Odyssey, where the delegates will experience the legendary epic of Homer thoroughly!
+
+The committee will have the delegates live the legendary ten-year journey of Odysseus, starting from the Trojan shores through the Aegean towards Ithaca. There are not only traitorous tides, but also divine intervention against the Warrior of the Mind and his crew. Poseidon, Lord of the Seas himself, will try his utmost to stop Athena’s champion from going home and that may be a little, tiny issue when one is trying to home via maritime travel.
+
+Odysseus and his crew will face many adversaries; monsters, humans and, Greek Gods sometimes all at once. The journey will test their resolve, their loyalties and their belief in King Odysseus. Will they succeed and return home? Will they perish on the road, defeated? The committee will allow the delegates to decide their own fate. How will they stop Scylla? How will they avoid Sirens?
+
+And of course, the actual epic ends with only Odysseus going home. The delegates will attempt to avoid their fate, and go home before everything they held dear crumbles to dust. There is a time limit after all, with Penelope’s suitors pressing her everyday to be the next King. The crew has to bring their King back home or their loved homeland will probably crumble to dust under tyrants. Or… do they really have to?
+
+Agenda Item: Open Agenda
+
+Co-Under-Secretary General: Uğur Cebeci
+Co-Under-Secretary General: Deniz Kaya
+
+Academic Assistant: Ali Batu Bağcı`
+  },
+  unesco: {
+    title: "MAIDAN UPRISING",
+    img: "unesco.png",
+    desc: `The “CC: Maidan Uprising” Committee consists solely of members of the Ukrainian government and has been established with the central aim of managing and resolving the ongoing Maidan Uprising. Its mission is to restore stability, order, and public calm by addressing the concerns of demonstrators, upholding the rule of law, and promoting dialogue between state authorities and protestors. Through coordinated policies and strategic action, the committee seeks to reduce tensions, rebuild public confidence, and create a foundation for meaningful communication and long-term reconciliation in Ukraine.
+
+Co-Under Secretary General: Mustafa Akca
+Co-Under Secretary General: Çağan Taylan Özgün`
+  },
+  caesar: {
+    title: "ARGENTINA MILITARY JUNTA",
+    img: "ceaser.png",
+    desc: `Cabinet of Argentine Military Junta: Dirty War – 🪖
+
+In the sun-drenched plains and peaks of Argentina, a thrilling conflict unfolds—one that screams the chaos of an era. Enter the stage of Argentina’s Dirty War. The Peronists, representatives of not only the working class but of all the nation, driven by the populist vision of Juan Perón, aimed to brutally revolutionize Argentina with no mercy.
+
+Opposing them are the anti-Peronist factions, a mix of conservatives, military elites, and intellectuals, fighting for their values against the rising government.
+
+Then, suddenly, President Juan Perón meets his death, and the country’s future is uncertain.
+
+How will the Argentinian Military Cabinet react in these circumstances? Will they choose to intervene or watch their country follow a path of division and disorder?
+
+Agenda Item: Open Agenda
+
+Under Secretary General: Güney Deniz Ala
+
+Academic Assistant: Egemen Ayyıldız`
+  },
+  court: {
+    title: "ISPC",
+    img: "ispc.png",
+    desc: `The International Space Policy Council (ISPC) is a high-level international platform established to address the rapid expansion of space activities and the growing need for global coordination. The council aims to promote cooperation among states, prevent potential conflicts, and develop common policies regarding the use of outer space.
+
+Within ISPC, delegates represent their countries’ national interests while also working toward the peaceful, sustainable, and equitable use of space. Key topics include satellite management, space resource utilization, and the regulation of emerging space technologies.
+
+Unlike traditional United Nations committees, ISPC operates with a more flexible and solution-oriented approach. Delegates engage in active negotiations, form strategic alliances, and respond to evolving scenarios. The committee emphasizes practical problem-solving and encourages participants to consider political, economic, and technological factors when shaping international space policy. Through dynamic discussions and realistic simulations, ISPC provides a platform for delegates to develop negotiation skills and gain insight into the complexities of global space governance.
+
+Agenda Item: Preventing the Militarization of Outer Space
+
+Under-Secretary General: Mustafa Aslan`
+  },
+  ecosoc: {
+    title: "IATA",
+    img: "iata.png",
+    desc: `The International Air Transport Association (IATA) represents, leads, and serves the airline industry, acting as the collective voice for over 360 airlines that comprise 85% of global air traffic. It advocates for safe, secure, sustainable, and efficient aviation operations by challenging unreasonable regulations, setting industry standards, and partnering with governments.
+
+IATA is going to focus on the necessity of Renewal of the Montreal Convention after the Irregularity and Loopholes Found in the Convention and the courts emerged because of the inefficiency and uncertainity.
+
+Agenda Item: Necessity of Renewal of The Montreal Convention (1999) after the Irregularity and Loopholes Found in the Convention.
+
+Under-Secretary General: Sacit Eren TUNCER
+
+Academic Assistant: Ata Yankı KILINÇ`
+  },
+  ccmedellin: {
+    title: "NAC",
+    img: "nac.png",
+    desc: `The North Atlantic Treaty Organisation is a military, security and political alliance formed on 4 April 1949 in Washington DC with the signing of the North Atlantic Treaty. North Atlantic Council (NAC) is the superior body within the North Atlantic Treaty Organisation (NATO). North Atlantic Council is the ground for political consultation for the states about their current agenda items. The ambassadors of NAC are and will be the decision makers at the end of the day, this means that all of the important decisions will be left to them to decide. As the only body within NATO that derives its authority directly from the founding treaty, the NAC holds a central role in maintaining political solidarity and coherence among allies. It provides a platform for members to coordinate national policies, assess emerging threats, and ensure alignment between political objectives and military strategies, thereby upholding the Alliance’s core commitment to collective defense and transatlantic security.
+
+Agenda Item: The Future of NATO’s Nuclear Security Policies
+
+Co-Under Secretary General: Aslı Ela Kemaloğlu
+Co-Under Secretary General: Yasemin Raithel`
+  },
+  unhcr: {
+    title: "CERN",
+    img: "cern.png",
+    desc: `Conseil Européen pour la Recherche Nucléaire, European Organization for Nuclear Research, known as CERN, is an intergovernmental organization which manages the largest particle physics laboratory in the world. CERN has established in 1954, it is based on the France–Switzerland border.
+
+A particle collider is a machine that uses electromagnetic fields to propel ions to very high speeds and energies to contain them in well-defined beams. They are used not only in fundamental research for an improved understanding of matter, but also in plethora of socioeconomic applications related to health, environmental monitoring, food quality, energy and aerospace technologies, and others.
+
+However, apart from these advanced technological applications and benefits, it also leads to major environmental problems due to its excessively high energy consumption.
+
+In this committee, delegates will address the use of energy resources and increasing energy efficiency. And they will aim to ensure a balance between the continuity of scientific research and the global environmental problems posed by Particle Colliders Techonology.
+
+Agenda Item: Managing the massive energy consumption and environmental impact of particle colliders
+
+Co-Under-Secretary General: Doruk Şentürk
+Co-Under-Secretary General: Doruk Sapmaz
+
+Academic Assistant: Beren Bilgin`
+  },
+  nato: {
+    title: "UN TOURISM",
+    img: "tourism.png",
+    desc: `UN Tourism (formerly known as UNWTO) is the United Nations specialized agency for responsible, sustainable and universally accessible tourism. UN Tourism works to position tourism as a key driver of economic growth, inclusive development, and environmental sustainability.
+
+Excessive tourism can seriously impact on native and indigenous populations. While tourism brings economic benefits, unmanaged mass tourism creates social, economic and cultural challenges for native populations. In this committee, delegates are expected to debate upon and bring solutions to the issues created by excessive tourism for native populations.
+
+Agenda Item: The impacts of excessive tourism on native populations
+
+Under-Secretary General: Defne Çankaya
+
+Academic Assistant: Ada Çakmak`
+  },
+  sochum: {
+    title: "UNESCO",
+    img: "unesco.png",
+    desc: `This committee will be focusing on protecting cultural heritage in conflict zones from intentional and unintentional damage. We will use international legal frameworks and digital archiving to save historical sites and prevent the loss of community identity. Our delegates will ensure these landmarks remain vital foundations for recovery after conflicts and for our shared human history.
+
+Agenda Item: Addressing the lack of the preservation of cultural heritage and safeguarding historical sites from intentional or unintentional destruction in conflict zones.
+
+Under-Secretary General: Gözde Ümit`
+  },
+  legal: {
+    title: "US CRIMINAL COURT",
+    img: "court.png",
+    desc: `A legal earthquake hit the American justice system in 1990 with the explosive murder trial known as The People of the State of California v. Lyle and Erik Menendez. This wasn’t just a typical criminal case; it was a televised sensation that gripped the entire nation. After the brutal shotgun slayings of their wealthy parents in their Beverly Hills mansion, the two brothers who initially claimed a mob hit were arrested and charged with first-degree murder.
+
+This simulation will take you into the heart of a Criminal Court, engaging you with core claims of premeditated murder versus imperfect self-defense. We will intensely scrutinize the accusations: Did the Menendez brothers kill for a multimillion-dollar inheritance and a life of luxury? Or was the violence the tragic result of years of hidden physical and emotional abuse? Did the prosecution prove that the brothers acted with “malice aforethought,” or did the defense successfully show a family driven by fear?
+
+This simulation will give every participant the chance to unpack the complexities of criminal intent and challenge the definition of a victim. We will debate one fundamental question: Can a horrific crime ever be justified by past trauma, or is cold-blooded murder always inexcusable? While law students will gain insight into the rules of evidence and the “Battered Person Syndrome” defense, all participants will engage with powerful, real-world testimonies that divided a nation.
+
+Don’t just stick with the headlines. Join the US Criminal Court in analyzing the forensic evidence, cross-examine the defendants and expert witnesses, and determine the legal consequences of this dark and pivotal case study.
+
+Agenda Item: The People of California v. Lyle and Erik Menendez
+
+Co-Under-Secretary General: Metehan Yıldırım
+Co-Under-Secretary General: Doğukan Yorgancı
+
+Academic Assistant: Tuğra Gündoğan`
+  },
+  disec: {
+    title: "H-WHO",
+    img: "who.png",
+    desc: `The radiation drifts silently across the borders. The fate of millions of life rests no longer on the strength of armies but within the the decisions of a single assembly.
+
+This committee places delegates at the center of history’s biggest nuclear catastrophe, gathered within the World Health Organization. Under the shadow of a radioactive cloud that knows no sovereignty, you are tasked with a race against time to safeguard global public health.
+
+As diplomats representing the nations of the world, you must navigate an atmosphere of suppressed data, rising panic and ideological friction. From the irradiated fields of Ukraine and Belarus to the far reaches of the Atlantic, you must manage unprecedented risks: securing the global food chain, forecasting a surge in long-term illnesses and rewriting the protocols for survival in a nuclear age.
+
+Every decision carries the weight of human lives, every hesitation risks a genetic legacy that will haunt generations. Success demands international cooperation, absolute transparency, scientific rigor and an unwavering ethical compass. In this room, ideological borders melt in the face of radiation but a lack of coordination will ensure the disaster never ends.
+
+Agenda item: Chernobyl 1986: Managing the immediate and long term health risks
+
+Co-Under Secretary General: Cihan Mert Sürücü
+Co-Under-Secretary General: Merve Naz Aydoğdu
+Co-Under-Secretary General: Süeda Kar`
+  }
+};
+
+/* ---- Modal Functions ---- */
+function openModal(id) {
+  const data = committeeData[id];
+  if(!data) return;
+  
+  document.getElementById('modalTitle').textContent = data.title;
+  document.getElementById('modalDescription').textContent = data.desc;
+  
+  document.getElementById('committeeModal').classList.add('active');
+  document.body.style.overflow = 'hidden'; 
+}
+
+function closeModal() {
+  document.getElementById('committeeModal').classList.remove('active');
+  document.body.style.overflow = 'auto'; 
+}
+
+/* ---- Page Loader (Süre 2 Saniyeye Sabitlendi) ---- */
+window.addEventListener('load', () => {
+  // Sayfa içeriği ne kadar hızlı hazır olursa olsun 2000ms bekletiyoruz
+  setTimeout(() => {
+    const loader = document.getElementById('pageLoader');
+    loader.classList.add('hidden');
+  }, 2000); 
+});
+
+/* ---- Navbar scroll effect ---- */
+window.addEventListener('scroll', () => {
+  const nav = document.getElementById('mainNavbar');
+  if (window.scrollY > 40) nav.classList.add('scrolled-nav');
+  else nav.classList.remove('scrolled-nav');
+}, { passive: true });
+
+/* ---- Tab switching ---- */
+function switchTab(viewId) {
+  document.querySelectorAll('.content-section').forEach(sec => {
+    sec.classList.remove('is-active');
+  });
+  const target = document.getElementById(viewId);
+  target.classList.add('is-active');
+
+  document.querySelectorAll('.nav-links a').forEach(a => {
+    a.classList.toggle('active-link', a.dataset.view === viewId);
+  });
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  closeMobileNav();
+}
+
+/* ---- Mobile nav ---- */
+function toggleMobileNav() {
+  const list = document.getElementById('linkList');
+  const overlay = document.getElementById('mobileOverlay');
+  const isOpen = list.classList.toggle('mobile-active');
+  overlay.classList.toggle('active', isOpen);
+}
+
+function closeMobileNav() {
+  document.getElementById('linkList').classList.remove('mobile-active');
+  document.getElementById('mobileOverlay').classList.remove('active');
+}
+
+/* ---- Prevent default on nav links ---- */
+document.querySelectorAll('.nav-links a').forEach(a => {
+  a.addEventListener('click', e => e.preventDefault());
+});
+
+const homeLink = document.querySelector('[data-view="home-view"]');
+if (homeLink) homeLink.classList.add('active-link');
+
+/* ---- Toast helper ---- */
+function showToast(msg, isError = false) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.className = 'toast' + (isError ? ' error' : '');
+  void toast.offsetWidth; 
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 4000);
+}
+
+/* ---- Contact form ---- */
+document.getElementById('inquiryForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = e.target.querySelector('.submit-trigger');
+  const span = document.getElementById('submitText');
+  btn.disabled = true;
+  span.textContent = 'SENDING…';
+
+  try {
+    const resp = await fetch(e.target.action, {
+      method: 'POST',
+      body: new FormData(e.target),
+      headers: { 'Accept': 'application/json' }
+    });
+    if (resp.ok) {
+      span.textContent = 'SENT ✓';
+      e.target.reset();
+      showToast('Your inquiry has been sent successfully.');
+      setTimeout(() => { span.textContent = 'SEND'; btn.disabled = false; }, 4000);
+    } else {
+      throw new Error('Server error');
+    }
+  } catch {
+    span.textContent = 'SEND';
+    btn.disabled = false;
+    showToast('Something went wrong. Please try again.', true);
+  }
+});
+
+/* ---- Intersection Observer for stagger reveals ---- */
+const revealEls = document.querySelectorAll('.reg-card, .council-box, .display-area');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }, i * 60);
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1 });
+
+revealEls.forEach(el => {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(24px)';
+  el.style.transition = 'opacity 0.6s ease, transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)';
+  observer.observe(el);
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closeMobileNav();
+    closeModal();
+  }
+});
+</script>
+
+</body>
+</html>
