@@ -74,7 +74,10 @@ body::before {
 body::after {
   content: '';
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100dvh; /* Dynamic Viewport Height: Mobilde çubuğun açılıp kapanmasına duyarlıdır */
   background: 
     radial-gradient(ellipse at center, transparent 40%, rgba(5,0,2,0.85) 100%),
     linear-gradient(165deg, rgba(13,3,5,0.7) 0%, rgba(30,7,9,0.5) 50%, rgba(13,3,5,0.7) 100%),
@@ -85,6 +88,9 @@ body::after {
   filter: brightness(1.1) contrast(1.1); 
   z-index: -1; 
   pointer-events: none;
+  /* Titremeyi önlemek için donanım hızlandırması */
+  transform: translateZ(0);
+  will-change: transform;
 }
 
 /* =========================================================
