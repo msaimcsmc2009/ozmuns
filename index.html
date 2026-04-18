@@ -34,6 +34,12 @@
 
 html { scroll-behavior: smooth; }
 
+html, body {
+  height: 100%;
+  width: 100%;
+  overscroll-behavior-y: none; /* Sayfanın en altına gelince oluşan lastik efektini kapatır */
+}
+
 body {
   background-color: var(--bg-void);
   color: var(--cream);
@@ -77,7 +83,7 @@ body::after {
   top: 0;
   left: 0;
   width: 100%;
-  height: 100dvh; /* Dynamic Viewport Height: Mobilde çubuğun açılıp kapanmasına duyarlıdır */
+  height: 100dvh; /* Dinamik yükseklik: Mobildeki kaymayı çözen ana komut */
   background: 
     radial-gradient(ellipse at center, transparent 40%, rgba(5,0,2,0.85) 100%),
     linear-gradient(165deg, rgba(13,3,5,0.7) 0%, rgba(30,7,9,0.5) 50%, rgba(13,3,5,0.7) 100%),
@@ -89,8 +95,8 @@ body::after {
   z-index: -1; 
   pointer-events: none;
   /* Titremeyi önlemek için donanım hızlandırması */
-  transform: translateZ(0);
-  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
 }
 
 /* =========================================================
