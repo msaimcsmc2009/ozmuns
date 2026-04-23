@@ -1473,7 +1473,7 @@ document.getElementById('inquiryForm').addEventListener('submit', async (e) => {
     if (resp.ok) {
       span.textContent = 'SENT ✓';
       e.target.reset();
-      showToast('Your inquiry has been sent successfully.');
+      showToast('Your message has been sent successfully.');
       setTimeout(() => { span.textContent = 'SEND'; btn.disabled = false; }, 4000);
     } else {
       throw new Error('Server error');
